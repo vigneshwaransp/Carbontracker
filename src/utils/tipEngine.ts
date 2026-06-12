@@ -22,6 +22,15 @@ const ALL_TIPS: Tip[] = [
   { id: 's4', title: 'Borrow or rent items', description: 'For rarely used items, borrow from friends or use rental services.', category: 'shopping', savingsKgPerYear: 150, difficulty: 'easy', icon: '🤝' },
 ];
 
+/**
+ * Returns a sorted list of personalized carbon-reducing tips.
+ * Tips from the user's highest-impact category are prioritized. Redundant recommendations
+ * are filtered out (e.g. no EV tips if they already drive an EV).
+ *
+ * @param profile - The user profile containing lifestyle choices.
+ * @param breakdown - The calculated carbon footprint breakdown.
+ * @returns A filtered and prioritized array of Tip objects.
+ */
 export function getPersonalizedTips(profile: UserProfile, breakdown: CarbonBreakdown): Tip[] {
   // Sort categories by impact (highest first)
   const categories = [
@@ -48,6 +57,11 @@ export function getPersonalizedTips(profile: UserProfile, breakdown: CarbonBreak
   });
 }
 
+/**
+ * Returns the full, unfiltered list of all tips available in the system.
+ *
+ * @returns An array of all Tip objects.
+ */
 export function getAllTips(): Tip[] {
   return ALL_TIPS;
 }

@@ -24,13 +24,6 @@ const CATEGORY_ICONS: Record<string, string> = {
   shopping: '🛍️',
 };
 
-const cardStyle: React.CSSProperties = {
-  background: '#e0e5ec',
-  boxShadow: '9px 9px 16px #b8bec7, -9px -9px 16px #ffffff',
-  borderRadius: '20px',
-  padding: '1.5rem',
-};
-
 export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
   const grade = getGrade(breakdown.total);
   const pieData = [
@@ -49,7 +42,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
   ];
 
   return (
-    <div style={{ padding: '5rem 1.5rem 2rem', maxWidth: '1100px', margin: '0 auto' }}>
+    <div className="dashboard-container">
       {/* Screen Reader Only Summary (A11y Requirement) */}
       <div className="sr-only">
         <h2>EcoTrack Carbon Dashboard Summary</h2>
@@ -99,48 +92,41 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
       </div>
 
       {/* Grade Card */}
-      <div style={{
-        ...cardStyle, textAlign: 'center', marginBottom: '2rem',
-      }} aria-live="polite">
-        <div style={{ fontSize: '4rem', fontWeight: 800, color: grade.color, lineHeight: 1 }}>{grade.grade}</div>
-        <div style={{ fontSize: '2rem', fontWeight: 700, color: '#2d3748', margin: '0.5rem 0' }}>
+      <div className="dashboard-grade-card" aria-live="polite">
+        <div className="dashboard-grade-value" style={{ color: grade.color }}>{grade.grade}</div>
+        <div className="dashboard-grade-title">
           {formatTonnes(breakdown.total)} tonnes CO₂/year
         </div>
-        <div style={{ color: '#718096', fontSize: '1rem' }}>{grade.label}</div>
-        <button onClick={onEdit} style={{
-          marginTop: '1rem', background: '#e0e5ec',
-          boxShadow: '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-          border: 'none', color: '#718096',
-          padding: '0.5rem 1.2rem', borderRadius: '14px', cursor: 'pointer',
-          fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.3s',
-        }}>
+        <div className="dashboard-grade-subtitle">{grade.label}</div>
+        <button 
+          onClick={onEdit} 
+          className="nm-btn dashboard-grade-btn"
+        >
           <span role="img" aria-label="pencil">✏️</span> Update My Data
         </button>
       </div>
 
       {/* Category breakdown cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+      <div className="dashboard-categories-grid">
         {pieData.map(cat => {
           const pct = breakdown.total > 0 ? Math.round((cat.value / breakdown.total) * 100) : 0;
           return (
-            <div key={cat.name} style={cardStyle}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '1.5rem' }}>
+            <div key={cat.name} className="dashboard-category-card">
+              <div className="dashboard-category-header">
+                <span className="dashboard-category-icon">
                   <span role="img" aria-label={cat.name}>{CATEGORY_ICONS[cat.name.toLowerCase()]}</span>
                 </span>
-                <span style={{ color: '#2d3748', fontWeight: 600, fontSize: '1rem' }}>{cat.name}</span>
+                <span className="dashboard-category-name">{cat.name}</span>
               </div>
-              <div style={{ color: cat.color, fontSize: '1.5rem', fontWeight: 700 }}>
+              <div className="dashboard-category-value" style={{ color: cat.color }}>
                 {formatTonnes(cat.value)}t
               </div>
-              <div style={{ color: '#718096', fontSize: '0.8rem', marginBottom: '0.5rem' }}>{pct}% of total</div>
-              <div style={{
-                height: '8px', borderRadius: '4px',
-                background: '#e0e5ec',
-                boxShadow: 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
-                overflow: 'hidden',
-              }}>
-                <div style={{ width: `${pct}%`, height: '100%', borderRadius: '4px', background: cat.color, transition: 'width 1s ease' }} />
+              <div className="dashboard-category-pct">{pct}% of total</div>
+              <div className="dashboard-category-progress-track">
+                <div 
+                  className="dashboard-category-progress-bar"
+                  style={{ width: `${pct}%`, background: cat.color }} 
+                />
               </div>
             </div>
           );
@@ -148,10 +134,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
       </div>
 
       {/* Charts row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+      <div className="dashboard-charts-grid">
         {/* Donut */}
-        <div style={cardStyle} aria-hidden="true">
-          <h3 style={{ color: '#2d3748', fontWeight: 700, margin: '0 0 1rem', fontSize: '1.05rem' }}>Emissions Breakdown</h3>
+        <div className="dashboard-chart-card" aria-hidden="true">
+          <h3 className="dashboard-chart-title">Emissions Breakdown</h3>
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
               <Pie data={pieData} dataKey="value" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
@@ -165,19 +151,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
               />
             </PieChart>
           </ResponsiveContainer>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className="dashboard-chart-legend">
             {pieData.map(cat => (
-              <div key={cat.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: cat.color }} />
-                <span style={{ color: '#718096', fontSize: '0.8rem' }}>{cat.name}</span>
+              <div key={cat.name} className="dashboard-chart-legend-item">
+                <div className="dashboard-chart-legend-dot" style={{ background: cat.color }} />
+                <span className="dashboard-chart-legend-label">{cat.name}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Comparison */}
-        <div style={cardStyle} aria-hidden="true">
-          <h3 style={{ color: '#2d3748', fontWeight: 700, margin: '0 0 1rem', fontSize: '1.05rem' }}>How You Compare</h3>
+        <div className="dashboard-chart-card" aria-hidden="true">
+          <h3 className="dashboard-chart-title">How You Compare</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={comparisonData} layout="vertical" margin={{ left: 10, right: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e0" />

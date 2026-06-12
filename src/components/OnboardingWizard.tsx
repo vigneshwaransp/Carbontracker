@@ -7,20 +7,6 @@ interface OnboardingProps {
 
 const STEPS = ['🚗 Transport', '🏠 Home', '🍽️ Food', '🛍️ Shopping'];
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '0.75rem', background: '#e0e5ec',
-  border: 'none', borderRadius: '12px',
-  color: '#2d3748', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box',
-  boxShadow: 'inset 3px 3px 6px #b8bec7, inset -3px -3px 6px #ffffff',
-  transition: 'box-shadow 0.3s ease',
-};
-
-const labelStyle: React.CSSProperties = {
-  color: '#718096', fontSize: '0.85rem', marginBottom: '0.4rem', display: 'block', fontWeight: 600,
-};
-
-const fieldStyle: React.CSSProperties = { marginBottom: '1.25rem' };
-
 export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>({ ...DEFAULT_PROFILE });
@@ -38,10 +24,14 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
     switch (step) {
       case 0: return (
         <div>
-          <div style={fieldStyle}>
-            <label htmlFor="carType" style={labelStyle}>Car type</label>
-            <select id="carType" style={inputStyle} value={profile.transport.carType}
-              onChange={e => updateTransport('carType', e.target.value as 'gasoline' | 'diesel' | 'hybrid' | 'electric' | 'none')}>
+          <div className="nm-field">
+            <label htmlFor="carType" className="nm-label">Car type</label>
+            <select 
+              id="carType" 
+              className="nm-input" 
+              value={profile.transport.carType}
+              onChange={e => updateTransport('carType', e.target.value as 'gasoline' | 'diesel' | 'hybrid' | 'electric' | 'none')}
+            >
               <option value="gasoline">Gasoline</option>
               <option value="diesel">Diesel</option>
               <option value="hybrid">Hybrid</option>
@@ -49,54 +39,95 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
               <option value="none">No car</option>
             </select>
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="carMiles" style={labelStyle}>Miles driven per week: {profile.transport.carMilesPerWeek}</label>
-            <input id="carMiles" type="range" min={0} max={500} value={profile.transport.carMilesPerWeek}
+          <div className="nm-field">
+            <label htmlFor="carMiles" className="nm-label">Miles driven per week: {profile.transport.carMilesPerWeek}</label>
+            <input 
+              id="carMiles" 
+              type="range" 
+              min={0} 
+              max={500} 
+              value={profile.transport.carMilesPerWeek}
               aria-label="Miles driven per week"
-              onChange={e => updateTransport('carMilesPerWeek', Number(e.target.value))} />
+              onChange={e => updateTransport('carMilesPerWeek', Number(e.target.value))} 
+            />
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="transitHours" style={labelStyle}>Public transit hours per week: {profile.transport.publicTransitHoursPerWeek}</label>
-            <input id="transitHours" type="range" min={0} max={40} value={profile.transport.publicTransitHoursPerWeek}
+          <div className="nm-field">
+            <label htmlFor="transitHours" className="nm-label">Public transit hours per week: {profile.transport.publicTransitHoursPerWeek}</label>
+            <input 
+              id="transitHours" 
+              type="range" 
+              min={0} 
+              max={40} 
+              value={profile.transport.publicTransitHoursPerWeek}
               aria-label="Public transit hours per week"
-              onChange={e => updateTransport('publicTransitHoursPerWeek', Number(e.target.value))} />
+              onChange={e => updateTransport('publicTransitHoursPerWeek', Number(e.target.value))} 
+            />
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="flights" style={labelStyle}>Round-trip flights per year: {profile.transport.flightsPerYear}</label>
-            <input id="flights" type="range" min={0} max={20} value={profile.transport.flightsPerYear}
+          <div className="nm-field">
+            <label htmlFor="flights" className="nm-label">Round-trip flights per year: {profile.transport.flightsPerYear}</label>
+            <input 
+              id="flights" 
+              type="range" 
+              min={0} 
+              max={20} 
+              value={profile.transport.flightsPerYear}
               aria-label="Round trip flights per year"
-              onChange={e => updateTransport('flightsPerYear', Number(e.target.value))} />
+              onChange={e => updateTransport('flightsPerYear', Number(e.target.value))} 
+            />
           </div>
         </div>
       );
       case 1: return (
         <div>
-          <div style={fieldStyle}>
-            <label htmlFor="electricity" style={labelStyle}>Electricity usage (kWh/month): {profile.home.electricityKwhPerMonth}</label>
-            <input id="electricity" type="range" min={100} max={3000} step={50} value={profile.home.electricityKwhPerMonth}
+          <div className="nm-field">
+            <label htmlFor="electricity" className="nm-label">Electricity usage (kWh/month): {profile.home.electricityKwhPerMonth}</label>
+            <input 
+              id="electricity" 
+              type="range" 
+              min={100} 
+              max={3000} 
+              step={50} 
+              value={profile.home.electricityKwhPerMonth}
               aria-label="Electricity usage in kilowatt hours per month"
-              onChange={e => updateHome('electricityKwhPerMonth', Number(e.target.value))} />
+              onChange={e => updateHome('electricityKwhPerMonth', Number(e.target.value))} 
+            />
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="naturalGas" style={labelStyle}>Natural gas (therms/month): {profile.home.naturalGasThermsPerMonth}</label>
-            <input id="naturalGas" type="range" min={0} max={200} value={profile.home.naturalGasThermsPerMonth}
+          <div className="nm-field">
+            <label htmlFor="naturalGas" className="nm-label">Natural gas (therms/month): {profile.home.naturalGasThermsPerMonth}</label>
+            <input 
+              id="naturalGas" 
+              type="range" 
+              min={0} 
+              max={200} 
+              value={profile.home.naturalGasThermsPerMonth}
               aria-label="Natural gas usage in therms per month"
-              onChange={e => updateHome('naturalGasThermsPerMonth', Number(e.target.value))} />
+              onChange={e => updateHome('naturalGasThermsPerMonth', Number(e.target.value))} 
+            />
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="householdSize" style={labelStyle}>Household size: {profile.home.householdSize}</label>
-            <input id="householdSize" type="range" min={1} max={8} value={profile.home.householdSize}
+          <div className="nm-field">
+            <label htmlFor="householdSize" className="nm-label">Household size: {profile.home.householdSize}</label>
+            <input 
+              id="householdSize" 
+              type="range" 
+              min={1} 
+              max={8} 
+              value={profile.home.householdSize}
               aria-label="Household size"
-              onChange={e => updateHome('householdSize', Number(e.target.value))} />
+              onChange={e => updateHome('householdSize', Number(e.target.value))} 
+            />
           </div>
         </div>
       );
       case 2: return (
         <div>
-          <div style={fieldStyle}>
-            <label htmlFor="dietType" style={labelStyle}>Diet type</label>
-            <select id="dietType" style={inputStyle} value={profile.food.dietType}
-              onChange={e => updateFood('dietType', e.target.value as 'meat_heavy' | 'average' | 'pescatarian' | 'vegetarian' | 'vegan')}>
+          <div className="nm-field">
+            <label htmlFor="dietType" className="nm-label">Diet type</label>
+            <select 
+              id="dietType" 
+              className="nm-input" 
+              value={profile.food.dietType}
+              onChange={e => updateFood('dietType', e.target.value as 'meat_heavy' | 'average' | 'pescatarian' | 'vegetarian' | 'vegan')}
+            >
               <option value="meat_heavy">Meat Heavy</option>
               <option value="average">Average</option>
               <option value="pescatarian">Pescatarian</option>
@@ -104,27 +135,45 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
               <option value="vegan">Vegan</option>
             </select>
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="localFood" style={labelStyle}>Locally sourced food: {profile.food.localFoodPercent}%</label>
-            <input id="localFood" type="range" min={0} max={100} value={profile.food.localFoodPercent}
+          <div className="nm-field">
+            <label htmlFor="localFood" className="nm-label">Locally sourced food: {profile.food.localFoodPercent}%</label>
+            <input 
+              id="localFood" 
+              type="range" 
+              min={0} 
+              max={100} 
+              value={profile.food.localFoodPercent}
               aria-label="Percentage of locally sourced food"
-              onChange={e => updateFood('localFoodPercent', Number(e.target.value))} />
+              onChange={e => updateFood('localFoodPercent', Number(e.target.value))} 
+            />
           </div>
         </div>
       );
       case 3: return (
         <div>
-          <div style={fieldStyle}>
-            <label htmlFor="clothing" style={labelStyle}>Clothing items per month: {profile.shopping.clothingItemsPerMonth}</label>
-            <input id="clothing" type="range" min={0} max={20} value={profile.shopping.clothingItemsPerMonth}
+          <div className="nm-field">
+            <label htmlFor="clothing" className="nm-label">Clothing items per month: {profile.shopping.clothingItemsPerMonth}</label>
+            <input 
+              id="clothing" 
+              type="range" 
+              min={0} 
+              max={20} 
+              value={profile.shopping.clothingItemsPerMonth}
               aria-label="Clothing items purchased per month"
-              onChange={e => updateShopping('clothingItemsPerMonth', Number(e.target.value))} />
+              onChange={e => updateShopping('clothingItemsPerMonth', Number(e.target.value))} 
+            />
           </div>
-          <div style={fieldStyle}>
-            <label htmlFor="electronics" style={labelStyle}>Electronics purchased per year: {profile.shopping.electronicsPerYear}</label>
-            <input id="electronics" type="range" min={0} max={10} value={profile.shopping.electronicsPerYear}
+          <div className="nm-field">
+            <label htmlFor="electronics" className="nm-label">Electronics purchased per year: {profile.shopping.electronicsPerYear}</label>
+            <input 
+              id="electronics" 
+              type="range" 
+              min={0} 
+              max={10} 
+              value={profile.shopping.electronicsPerYear}
               aria-label="Electronics purchased per year"
-              onChange={e => updateShopping('electronicsPerYear', Number(e.target.value))} />
+              onChange={e => updateShopping('electronicsPerYear', Number(e.target.value))} 
+            />
           </div>
         </div>
       );
@@ -132,70 +181,63 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', background: '#e0e5ec' }}>
-      <div style={{
-        background: '#e0e5ec',
-        boxShadow: '12px 12px 24px #b8bec7, -12px -12px 24px #ffffff',
-        borderRadius: '24px',
-        padding: '2.5rem', width: '100%', maxWidth: '520px',
-      }}>
+    <div className="wizard-container">
+      <div className="wizard-card">
         {/* Progress bar */}
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+        <div className="wizard-progress-bar-container">
           {STEPS.map((s, i) => (
-            <div key={s} style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{
-                height: '6px', borderRadius: '3px', marginBottom: '0.5rem',
-                background: i <= step
-                  ? 'linear-gradient(90deg, #667eea, #764ba2)'
-                  : '#e0e5ec',
-                boxShadow: i <= step
-                  ? 'none'
-                  : 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
-                transition: 'all 0.5s ease',
-              }} />
-              <span style={{ fontSize: '0.7rem', color: i <= step ? '#2d3748' : '#a0aec0' }}>{s}</span>
+            <div key={s} className="wizard-progress-step">
+              <div 
+                className="wizard-progress-line"
+                style={{
+                  background: i <= step
+                    ? 'linear-gradient(90deg, #667eea, #764ba2)'
+                    : '#e0e5ec',
+                  boxShadow: i <= step
+                    ? 'none'
+                    : 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
+                }} 
+              />
+              <span 
+                className="wizard-progress-text"
+                style={{ color: i <= step ? '#2d3748' : '#a0aec0' }}
+              >
+                {s}
+              </span>
             </div>
           ))}
         </div>
 
-        <h2 style={{ color: '#2d3748', fontSize: '1.4rem', fontWeight: 700, margin: '0 0 1.5rem' }}>
+        <h2 className="wizard-title">
           {STEPS[step]}
         </h2>
 
         {renderStep()}
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem' }}>
+        <div className="wizard-buttons">
           {step > 0 ? (
-            <button onClick={() => setStep(s => s - 1)} style={{
-              background: '#e0e5ec',
-              boxShadow: '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-              border: 'none',
-              color: '#718096', padding: '0.7rem 1.5rem', borderRadius: '14px',
-              cursor: 'pointer', fontWeight: 600, transition: 'all 0.3s',
-            }}>← Back</button>
+            <button 
+              onClick={() => setStep(s => s - 1)} 
+              className="nm-btn"
+            >
+              ← Back
+            </button>
           ) : <div />}
           {step < 3 ? (
-            <button onClick={() => setStep(s => s + 1)} style={{
-              background: 'linear-gradient(135deg, #667eea, #764ba2)', border: 'none',
-              color: '#ffffff', padding: '0.7rem 1.5rem', borderRadius: '14px',
-              cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem',
-              boxShadow: '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-              transition: 'transform 0.3s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-            >Next →</button>
+            <button 
+              onClick={() => setStep(s => s + 1)} 
+              className="nm-btn-primary"
+            >
+              Next →
+            </button>
           ) : (
-            <button onClick={() => onComplete(profile)} style={{
-              background: 'linear-gradient(135deg, #48bb78, #4299e1)', border: 'none',
-              color: '#ffffff', padding: '0.7rem 1.5rem', borderRadius: '14px',
-              cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem',
-              boxShadow: '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-              transition: 'transform 0.3s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-            >See My Footprint 🌍</button>
+            <button 
+              onClick={() => onComplete(profile)} 
+              className="nm-btn-primary"
+              style={{ background: 'linear-gradient(135deg, #48bb78, #4299e1)' }}
+            >
+              See My Footprint 🌍
+            </button>
           )}
         </div>
       </div>

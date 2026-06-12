@@ -24,66 +24,45 @@ export const Challenges: React.FC<ChallengesProps> = ({ completedIds, onToggle }
   const totalPoints = CHALLENGES.filter(c => completedIds.includes(c.id)).reduce((sum, c) => sum + c.points, 0);
 
   return (
-    <div style={{ padding: '5rem 1.5rem 2rem', maxWidth: '1100px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', marginBottom: '2rem' }}>
+    <div className="challenges-container">
+      <div className="challenges-header">
         <div>
-          <h2 style={{
-            background: 'linear-gradient(135deg, #ecc94b, #ed8936)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            fontSize: '2rem', fontWeight: 800, margin: '0 0 0.3rem',
-          }}>Daily Challenges</h2>
-          <p style={{ color: '#718096', margin: 0 }}>Complete eco-friendly tasks and earn points!</p>
+          <h2 className="challenges-title">Daily Challenges</h2>
+          <p className="challenges-subtitle">Complete eco-friendly tasks and earn points!</p>
         </div>
-        <div style={{
-          background: '#e0e5ec',
-          boxShadow: '9px 9px 16px #b8bec7, -9px -9px 16px #ffffff',
-          borderRadius: '20px', padding: '0.75rem 1.5rem', textAlign: 'center',
-        }}>
-          <div style={{ color: '#ed8936', fontSize: '1.5rem', fontWeight: 800 }}>{totalPoints}</div>
-          <div style={{ color: '#718096', fontSize: '0.75rem', fontWeight: 600 }}>Points Earned</div>
+        <div className="challenges-points-card">
+          <div className="challenges-points-value">{totalPoints}</div>
+          <div className="challenges-points-label">Points Earned</div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
+      <div className="challenges-grid">
         {CHALLENGES.map(ch => {
           const done = completedIds.includes(ch.id);
           return (
-            <div key={ch.id} style={{
-              background: '#e0e5ec',
-              boxShadow: done
-                ? 'inset 5px 5px 10px #b8bec7, inset -5px -5px 10px #ffffff'
-                : '9px 9px 16px #b8bec7, -9px -9px 16px #ffffff',
-              borderRadius: '20px', padding: '1.25rem',
-              transition: 'all 0.3s ease',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '1.8rem' }}>
+            <div key={ch.id} className={`challenge-card ${done ? 'done' : ''}`}>
+              <div className="challenge-card-header">
+                <span className="challenge-icon">
                   <span role="img" aria-hidden="true">{ch.icon}</span>
                 </span>
-                <span style={{
-                  background: '#e0e5ec',
-                  boxShadow: 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
-                  color: '#9f7aea',
-                  padding: '0.15rem 0.5rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700,
-                }}>+{ch.points} pts</span>
+                <span className="challenge-points-badge">+{ch.points} pts</span>
               </div>
-              <h3 style={{ color: '#2d3748', fontSize: '1rem', fontWeight: 600, margin: '0 0 0.4rem' }}>{ch.title}</h3>
-              <p style={{ color: '#718096', fontSize: '0.82rem', lineHeight: 1.5, margin: '0 0 1rem' }}>{ch.description}</p>
+              <h3 className="challenge-title">{ch.title}</h3>
+              <p className="challenge-description">{ch.description}</p>
               <button 
                 onClick={() => onToggle(ch.id)} 
                 aria-pressed={done}
                 aria-label={`Toggle challenge: ${ch.title}`}
+                className="nm-btn"
                 style={{
-                  width: '100%', padding: '0.6rem',
-                  background: done ? 'linear-gradient(135deg, #48bb78, #38a169)' : '#e0e5ec',
-                  boxShadow: done
-                    ? 'none'
-                    : '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-                  border: 'none', borderRadius: '14px',
-                  color: done ? '#ffffff' : '#718096',
-                  cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
-                  transition: 'all 0.3s ease',
-                }}>{done ? '✓ Completed' : 'Mark Complete'}</button>
+                  width: '100%',
+                  background: done ? 'linear-gradient(135deg, #48bb78, #38a169)' : '',
+                  color: done ? '#ffffff' : '',
+                  boxShadow: done ? 'none' : '',
+                }}
+              >
+                {done ? '✓ Completed' : 'Mark Complete'}
+              </button>
             </div>
           );
         })}

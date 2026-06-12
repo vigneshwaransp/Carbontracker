@@ -1,6 +1,13 @@
 import { UserProfile, CarbonBreakdown } from '../types';
 import { TRANSPORT, HOME, FOOD, SHOPPING } from '../data/emissionFactors';
 
+/**
+ * Calculates the annual carbon footprint breakdown (in kg CO2) across Transport, Home, Food, and Shopping.
+ * Values are calculated based on EPA and academic research emission factors.
+ *
+ * @param profile - The user profile containing lifestyle choices and usage data.
+ * @returns A breakdown of carbon emissions per category and the total annual emissions.
+ */
 export function calculateCarbon(profile: UserProfile): CarbonBreakdown {
   // Transport (annual kg CO2)
   const carAnnual = profile.transport.carMilesPerWeek * 52 *
@@ -30,6 +37,12 @@ export function calculateCarbon(profile: UserProfile): CarbonBreakdown {
   return { transport, home: homeTotal, food, shopping, total };
 }
 
+/**
+ * Returns a letter grade, accent color, and descriptive rating based on total annual carbon emissions (in kg).
+ *
+ * @param totalKg - The total annual carbon footprint in kg CO2.
+ * @returns An object containing the letter grade, CSS hex color, and a description.
+ */
 export function getGrade(totalKg: number): { grade: string; color: string; label: string } {
   if (totalKg < 3000) return { grade: 'A+', color: '#10b981', label: 'Excellent! Well below average.' };
   if (totalKg < 5000) return { grade: 'A', color: '#34d399', label: 'Great! Below world average.' };
@@ -39,6 +52,12 @@ export function getGrade(totalKg: number): { grade: string; color: string; label
   return { grade: 'F', color: '#dc2626', label: 'Very high. Urgent action needed!' };
 }
 
+/**
+ * Formats a raw carbon footprint value in kilograms to tonnes, rounded to 1 decimal place.
+ *
+ * @param kg - The footprint weight in kilograms.
+ * @returns The formatted string in tonnes (e.g. "4.2").
+ */
 export function formatTonnes(kg: number): string {
   return (kg / 1000).toFixed(1);
 }

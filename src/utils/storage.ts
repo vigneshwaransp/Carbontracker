@@ -2,6 +2,11 @@ import { UserData, UserProfile, CarbonLogEntry } from '../types';
 
 const STORAGE_KEY = 'ecotrack_user_data';
 
+/**
+ * Returns the default initial UserData structure.
+ *
+ * @returns A default UserData object.
+ */
 function getDefaultData(): UserData {
   return {
     profile: null,
@@ -13,19 +18,33 @@ function getDefaultData(): UserData {
   };
 }
 
+/**
+ * Safely parses and validates localStorage objects against the UserData schema
+ * to ensure runtime stability and prevent type pollution or security vulnerabilities.
+ *
+ * @param obj - The raw parsed JSON object.
+ * @returns A validated UserData object with correct defaults for missing or invalid properties.
+ */
 function validateUserData(obj: unknown): UserData {
   const defaultData = getDefaultData();
   if (!obj || typeof obj !== 'object') return defaultData;
 
   const rawObj = obj as Record<string, unknown>;
 
+  interface RawProfile {
+    transport?: { carType?: unknown; carMilesPerWeek?: unknown; publicTransitHoursPerWeek?: unknown; flightsPerYear?: unknown };
+    home?: { electricityKwhPerMonth?: unknown; naturalGasThermsPerMonth?: unknown; householdSize?: unknown };
+    food?: { dietType?: unknown; localFoodPercent?: unknown };
+    shopping?: { clothingItemsPerMonth?: unknown; electronicsPerYear?: unknown };
+  }
+
   const validProfile = (p: unknown): UserProfile | null => {
     if (!p || typeof p !== 'object') return null;
-    const rawP = p as Record<string, any>;
+    const rawP = p as RawProfile;
     try {
       return {
         transport: {
-          carType: typeof rawP.transport?.carType === 'string' ? rawP.transport.carType : 'none',
+          carType: typeof rawP.transport?.carType === 'string' && ['gasoline', 'diesel', 'hybrid', 'electric', 'none'].includes(rawP.transport.carType) ? (rawP.transport.carType as UserProfile['transport']['carType']) : 'none',
           carMilesPerWeek: typeof rawP.transport?.carMilesPerWeek === 'number' ? rawP.transport.carMilesPerWeek : 0,
           publicTransitHoursPerWeek: typeof rawP.transport?.publicTransitHoursPerWeek === 'number' ? rawP.transport.publicTransitHoursPerWeek : 0,
           flightsPerYear: typeof rawP.transport?.flightsPerYear === 'number' ? rawP.transport.flightsPerYear : 0,
@@ -36,7 +55,7 @@ function validateUserData(obj: unknown): UserData {
           householdSize: typeof rawP.home?.householdSize === 'number' ? rawP.home.householdSize : 1,
         },
         food: {
-          dietType: typeof rawP.food?.dietType === 'string' ? rawP.food.dietType : 'average',
+          dietType: typeof rawP.food?.dietType === 'string' && ['meat_heavy', 'average', 'pescatarian', 'vegetarian', 'vegan'].includes(rawP.food.dietType) ? (rawP.food.dietType as UserProfile['food']['dietType']) : 'average',
           localFoodPercent: typeof rawP.food?.localFoodPercent === 'number' ? rawP.food.localFoodPercent : 0,
         },
         shopping: {
@@ -71,6 +90,11 @@ function validateUserData(obj: unknown): UserData {
   };
 }
 
+/**
+ * Loads user data from localStorage and validates it.
+ *
+ * @returns The validated UserData object or default structure if empty/corrupted.
+ */
 export function loadUserData(): UserData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -82,10 +106,20 @@ export function loadUserData(): UserData {
   }
 }
 
+/**
+ * Saves user data directly to localStorage.
+ *
+ * @param data - The UserData object to save.
+ */
 export function saveUserData(data: UserData): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
+/**
+ * Saves the user profile and updates onboarding status.
+ *
+ * @param profile - The UserProfile choices to save.
+ */
 export function saveProfile(profile: UserProfile): void {
   const data = loadUserData();
   data.profile = profile;
@@ -94,6 +128,11 @@ export function saveProfile(profile: UserProfile): void {
   saveUserData(data);
 }
 
+/**
+ * Logs a daily carbon footprint breakdown, retaining a max history of 90 days.
+ *
+ * @param entry - The CarbonLogEntry to log.
+ */
 export function addCarbonLog(entry: CarbonLogEntry): void {
   const data = loadUserData();
   // Only keep one entry per date
@@ -105,6 +144,11 @@ export function addCarbonLog(entry: CarbonLogEntry): void {
   saveUserData(data);
 }
 
+/**
+ * Toggles a daily challenge completion state.
+ *
+ * @param challengeId - The ID of the challenge to toggle.
+ */
 export function toggleChallenge(challengeId: string): void {
   const data = loadUserData();
   const idx = data.completedChallenges.indexOf(challengeId);
@@ -116,6 +160,9 @@ export function toggleChallenge(challengeId: string): void {
   saveUserData(data);
 }
 
+/**
+ * Deletes all stored user data, resetting the app to default.
+ */
 export function resetAllData(): void {
   localStorage.removeItem(STORAGE_KEY);
 }

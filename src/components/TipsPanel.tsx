@@ -26,24 +26,28 @@ export const TipsPanel: React.FC<TipsPanelProps> = ({ tips }) => {
       <p style={{ color: '#718096', marginBottom: '1.5rem' }}>Actions sorted by your highest-impact areas</p>
 
       {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }} role="tablist" aria-label="Filter tips by category">
         {categories.map(cat => (
-          <button key={cat} onClick={() => setFilter(cat)} style={{
-            background: filter === cat ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#e0e5ec',
-            color: filter === cat ? '#ffffff' : '#718096',
-            border: 'none',
-            padding: '0.5rem 1.2rem', borderRadius: '14px', cursor: 'pointer',
-            fontWeight: 600, fontSize: '0.85rem', textTransform: 'capitalize' as const,
-            boxShadow: filter === cat
-              ? 'inset 5px 5px 10px #b8bec7, inset -5px -5px 10px #ffffff'
-              : '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-            transition: 'all 0.3s ease',
-          }}>{cat}</button>
+          <button key={cat} onClick={() => setFilter(cat)} 
+            role="tab"
+            aria-selected={filter === cat}
+            aria-controls="tips-grid"
+            style={{
+              background: filter === cat ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#e0e5ec',
+              color: filter === cat ? '#ffffff' : '#718096',
+              border: 'none',
+              padding: '0.5rem 1.2rem', borderRadius: '14px', cursor: 'pointer',
+              fontWeight: 600, fontSize: '0.85rem', textTransform: 'capitalize' as const,
+              boxShadow: filter === cat
+                ? 'inset 5px 5px 10px #b8bec7, inset -5px -5px 10px #ffffff'
+                : '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
+              transition: 'all 0.3s ease',
+            }}>{cat}</button>
         ))}
       </div>
 
       {/* Tips grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' }}>
+      <div id="tips-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' }} role="region" aria-live="polite">
         {filtered.map(tip => (
           <div key={tip.id} style={{
             background: '#e0e5ec',
@@ -56,7 +60,9 @@ export const TipsPanel: React.FC<TipsPanelProps> = ({ tips }) => {
           onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '9px 9px 16px #b8bec7, -9px -9px 16px #ffffff'; }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-              <span style={{ fontSize: '2rem' }}>{tip.icon}</span>
+              <span style={{ fontSize: '2rem' }}>
+                <span role="img" aria-hidden="true">{tip.icon}</span>
+              </span>
               <span style={{
                 background: '#e0e5ec',
                 boxShadow: 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
@@ -72,7 +78,9 @@ export const TipsPanel: React.FC<TipsPanelProps> = ({ tips }) => {
               boxShadow: 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
               borderRadius: '10px', padding: '0.4rem 0.75rem', display: 'inline-block',
             }}>
-              <span style={{ color: '#48bb78', fontWeight: 700, fontSize: '0.85rem' }}>💚 Save {tip.savingsKgPerYear} kg/year</span>
+              <span style={{ color: '#48bb78', fontWeight: 700, fontSize: '0.85rem' }}>
+                <span role="img" aria-hidden="true">💚</span> Save {tip.savingsKgPerYear} kg/year
+              </span>
             </div>
           </div>
         ))}

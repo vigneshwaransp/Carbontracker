@@ -7,7 +7,7 @@ export const Footer: React.FC = () => (
     background: '#e0e5ec',
   }}>
     <p style={{ margin: '0 0 0.3rem' }}>
-      🌍 EcoTrack — Built with ❤️ for a sustainable future
+      <span role="img" aria-label="Globe">🌍</span> EcoTrack — Built with <span role="img" aria-label="love">❤️</span> for a sustainable future
     </p>
     <p style={{ margin: 0 }}>
       Carbon factors based on EPA & academic research. Data stored locally in your browser.

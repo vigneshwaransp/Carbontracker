@@ -50,10 +50,58 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
 
   return (
     <div style={{ padding: '5rem 1.5rem 2rem', maxWidth: '1100px', margin: '0 auto' }}>
+      {/* Screen Reader Only Summary (A11y Requirement) */}
+      <div className="sr-only">
+        <h2>EcoTrack Carbon Dashboard Summary</h2>
+        <p>Your overall rating is {grade.grade}: {grade.label}</p>
+        <p>Your total carbon footprint is {formatTonnes(breakdown.total)} tonnes of CO₂ per year.</p>
+        
+        <h3>Category Breakdown</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Emissions (Tonnes CO₂/year)</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pieData.map(cat => {
+              const pct = breakdown.total > 0 ? Math.round((cat.value / breakdown.total) * 100) : 0;
+              return (
+                <tr key={cat.name}>
+                  <td>{cat.name}</td>
+                  <td>{formatTonnes(cat.value)}</td>
+                  <td>{pct}%</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <h3>Global Benchmarks Comparison</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Emissions (Tonnes CO₂/year)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparisonData.map(item => (
+              <tr key={item.name}>
+                <td>{item.name}</td>
+                <td>{formatTonnes(item.value)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       {/* Grade Card */}
       <div style={{
         ...cardStyle, textAlign: 'center', marginBottom: '2rem',
-      }}>
+      }} aria-live="polite">
         <div style={{ fontSize: '4rem', fontWeight: 800, color: grade.color, lineHeight: 1 }}>{grade.grade}</div>
         <div style={{ fontSize: '2rem', fontWeight: 700, color: '#2d3748', margin: '0.5rem 0' }}>
           {formatTonnes(breakdown.total)} tonnes CO₂/year
@@ -65,7 +113,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
           border: 'none', color: '#718096',
           padding: '0.5rem 1.2rem', borderRadius: '14px', cursor: 'pointer',
           fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.3s',
-        }}>✏️ Update My Data</button>
+        }}>
+          <span role="img" aria-label="pencil">✏️</span> Update My Data
+        </button>
       </div>
 
       {/* Category breakdown cards */}
@@ -75,7 +125,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
           return (
             <div key={cat.name} style={cardStyle}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '1.5rem' }}>{CATEGORY_ICONS[cat.name.toLowerCase()]}</span>
+                <span style={{ fontSize: '1.5rem' }}>
+                  <span role="img" aria-label={cat.name}>{CATEGORY_ICONS[cat.name.toLowerCase()]}</span>
+                </span>
                 <span style={{ color: '#2d3748', fontWeight: 600, fontSize: '1rem' }}>{cat.name}</span>
               </div>
               <div style={{ color: cat.color, fontSize: '1.5rem', fontWeight: 700 }}>
@@ -98,7 +150,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
       {/* Charts row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
         {/* Donut */}
-        <div style={cardStyle}>
+        <div style={cardStyle} aria-hidden="true">
           <h3 style={{ color: '#2d3748', fontWeight: 700, margin: '0 0 1rem', fontSize: '1.05rem' }}>Emissions Breakdown</h3>
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
@@ -109,7 +161,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
               </Pie>
               <Tooltip
                 contentStyle={{ background: '#e0e5ec', boxShadow: '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff', borderRadius: '12px', border: 'none', color: '#2d3748' }}
-                formatter={(value: any) => [`${formatTonnes(Number(value))}t CO₂`, '']}
+                formatter={(value: unknown) => [`${formatTonnes(Number(value))}t CO₂`, '']}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -124,7 +176,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
         </div>
 
         {/* Comparison */}
-        <div style={cardStyle}>
+        <div style={cardStyle} aria-hidden="true">
           <h3 style={{ color: '#2d3748', fontWeight: 700, margin: '0 0 1rem', fontSize: '1.05rem' }}>How You Compare</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={comparisonData} layout="vertical" margin={{ left: 10, right: 20 }}>
@@ -133,7 +185,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ breakdown, onEdit }) => {
               <YAxis type="category" dataKey="name" tick={{ fill: '#718096', fontSize: 12 }} width={80} />
               <Tooltip
                 contentStyle={{ background: '#e0e5ec', boxShadow: '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff', borderRadius: '12px', border: 'none', color: '#2d3748' }}
-                formatter={(value: any) => [`${(Number(value)/1000).toFixed(1)} tonnes CO₂/year`, '']}
+                formatter={(value: unknown) => [`${(Number(value)/1000).toFixed(1)} tonnes CO₂/year`, '']}
               />
               <Bar dataKey="value" radius={[0, 8, 8, 0]}>
                 {comparisonData.map((entry, i) => (

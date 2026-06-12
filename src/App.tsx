@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { UserProfile, CarbonBreakdown } from './types';
 import { calculateCarbon } from './utils/carbonCalc';
 import { getPersonalizedTips } from './utils/tipEngine';
-import { loadUserData, saveProfile, addCarbonLog, toggleChallenge, resetAllData, saveUserData } from './utils/storage';
+import { loadUserData, saveProfile, addCarbonLog, toggleChallenge, resetAllData } from './utils/storage';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { OnboardingWizard } from './components/OnboardingWizard';
@@ -14,21 +14,21 @@ import { Footer } from './components/Footer';
 type AppView = 'hero' | 'onboarding' | 'Dashboard' | 'Tips' | 'Challenges';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<AppView>('hero');
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [breakdown, setBreakdown] = useState<CarbonBreakdown | null>(null);
-  const [completedChallenges, setCompletedChallenges] = useState<string[]>([]);
+  // Load saved data synchronously on mount
+  const initialData = loadUserData();
 
-  // Load saved data on mount
-  useEffect(() => {
-    const data = loadUserData();
-    if (data.onboardingComplete && data.profile) {
-      setProfile(data.profile);
-      setBreakdown(calculateCarbon(data.profile));
-      setCompletedChallenges(data.completedChallenges);
-      setView('Dashboard');
-    }
-  }, []);
+  const [view, setView] = useState<AppView>(() => 
+    initialData.onboardingComplete && initialData.profile ? 'Dashboard' : 'hero'
+  );
+  const [profile, setProfile] = useState<UserProfile | null>(() => 
+    initialData.profile
+  );
+  const [breakdown, setBreakdown] = useState<CarbonBreakdown | null>(() => 
+    initialData.profile ? calculateCarbon(initialData.profile) : null
+  );
+  const [completedChallenges, setCompletedChallenges] = useState<string[]>(() => 
+    initialData.completedChallenges
+  );
 
   const handleOnboardingComplete = useCallback((newProfile: UserProfile) => {
     setProfile(newProfile);

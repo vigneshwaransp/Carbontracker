@@ -25,13 +25,13 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>({ ...DEFAULT_PROFILE });
 
-  const updateTransport = (key: string, value: any) =>
+  const updateTransport = <K extends keyof UserProfile['transport']>(key: K, value: UserProfile['transport'][K]) =>
     setProfile(p => ({ ...p, transport: { ...p.transport, [key]: value } }));
-  const updateHome = (key: string, value: any) =>
+  const updateHome = <K extends keyof UserProfile['home']>(key: K, value: UserProfile['home'][K]) =>
     setProfile(p => ({ ...p, home: { ...p.home, [key]: value } }));
-  const updateFood = (key: string, value: any) =>
+  const updateFood = <K extends keyof UserProfile['food']>(key: K, value: UserProfile['food'][K]) =>
     setProfile(p => ({ ...p, food: { ...p.food, [key]: value } }));
-  const updateShopping = (key: string, value: any) =>
+  const updateShopping = <K extends keyof UserProfile['shopping']>(key: K, value: UserProfile['shopping'][K]) =>
     setProfile(p => ({ ...p, shopping: { ...p.shopping, [key]: value } }));
 
   const renderStep = () => {
@@ -39,9 +39,9 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
       case 0: return (
         <div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Car type</label>
-            <select style={inputStyle} value={profile.transport.carType}
-              onChange={e => updateTransport('carType', e.target.value)}>
+            <label htmlFor="carType" style={labelStyle}>Car type</label>
+            <select id="carType" style={inputStyle} value={profile.transport.carType}
+              onChange={e => updateTransport('carType', e.target.value as 'gasoline' | 'diesel' | 'hybrid' | 'electric' | 'none')}>
               <option value="gasoline">Gasoline</option>
               <option value="diesel">Diesel</option>
               <option value="hybrid">Hybrid</option>
@@ -50,18 +50,21 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
             </select>
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Miles driven per week: {profile.transport.carMilesPerWeek}</label>
-            <input type="range" min={0} max={500} value={profile.transport.carMilesPerWeek}
+            <label htmlFor="carMiles" style={labelStyle}>Miles driven per week: {profile.transport.carMilesPerWeek}</label>
+            <input id="carMiles" type="range" min={0} max={500} value={profile.transport.carMilesPerWeek}
+              aria-label="Miles driven per week"
               onChange={e => updateTransport('carMilesPerWeek', Number(e.target.value))} />
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Public transit hours per week: {profile.transport.publicTransitHoursPerWeek}</label>
-            <input type="range" min={0} max={40} value={profile.transport.publicTransitHoursPerWeek}
+            <label htmlFor="transitHours" style={labelStyle}>Public transit hours per week: {profile.transport.publicTransitHoursPerWeek}</label>
+            <input id="transitHours" type="range" min={0} max={40} value={profile.transport.publicTransitHoursPerWeek}
+              aria-label="Public transit hours per week"
               onChange={e => updateTransport('publicTransitHoursPerWeek', Number(e.target.value))} />
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Round-trip flights per year: {profile.transport.flightsPerYear}</label>
-            <input type="range" min={0} max={20} value={profile.transport.flightsPerYear}
+            <label htmlFor="flights" style={labelStyle}>Round-trip flights per year: {profile.transport.flightsPerYear}</label>
+            <input id="flights" type="range" min={0} max={20} value={profile.transport.flightsPerYear}
+              aria-label="Round trip flights per year"
               onChange={e => updateTransport('flightsPerYear', Number(e.target.value))} />
           </div>
         </div>
@@ -69,18 +72,21 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
       case 1: return (
         <div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Electricity usage (kWh/month): {profile.home.electricityKwhPerMonth}</label>
-            <input type="range" min={100} max={3000} step={50} value={profile.home.electricityKwhPerMonth}
+            <label htmlFor="electricity" style={labelStyle}>Electricity usage (kWh/month): {profile.home.electricityKwhPerMonth}</label>
+            <input id="electricity" type="range" min={100} max={3000} step={50} value={profile.home.electricityKwhPerMonth}
+              aria-label="Electricity usage in kilowatt hours per month"
               onChange={e => updateHome('electricityKwhPerMonth', Number(e.target.value))} />
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Natural gas (therms/month): {profile.home.naturalGasThermsPerMonth}</label>
-            <input type="range" min={0} max={200} value={profile.home.naturalGasThermsPerMonth}
+            <label htmlFor="naturalGas" style={labelStyle}>Natural gas (therms/month): {profile.home.naturalGasThermsPerMonth}</label>
+            <input id="naturalGas" type="range" min={0} max={200} value={profile.home.naturalGasThermsPerMonth}
+              aria-label="Natural gas usage in therms per month"
               onChange={e => updateHome('naturalGasThermsPerMonth', Number(e.target.value))} />
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Household size: {profile.home.householdSize}</label>
-            <input type="range" min={1} max={8} value={profile.home.householdSize}
+            <label htmlFor="householdSize" style={labelStyle}>Household size: {profile.home.householdSize}</label>
+            <input id="householdSize" type="range" min={1} max={8} value={profile.home.householdSize}
+              aria-label="Household size"
               onChange={e => updateHome('householdSize', Number(e.target.value))} />
           </div>
         </div>
@@ -88,9 +94,9 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
       case 2: return (
         <div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Diet type</label>
-            <select style={inputStyle} value={profile.food.dietType}
-              onChange={e => updateFood('dietType', e.target.value)}>
+            <label htmlFor="dietType" style={labelStyle}>Diet type</label>
+            <select id="dietType" style={inputStyle} value={profile.food.dietType}
+              onChange={e => updateFood('dietType', e.target.value as 'meat_heavy' | 'average' | 'pescatarian' | 'vegetarian' | 'vegan')}>
               <option value="meat_heavy">Meat Heavy</option>
               <option value="average">Average</option>
               <option value="pescatarian">Pescatarian</option>
@@ -99,8 +105,9 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
             </select>
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Locally sourced food: {profile.food.localFoodPercent}%</label>
-            <input type="range" min={0} max={100} value={profile.food.localFoodPercent}
+            <label htmlFor="localFood" style={labelStyle}>Locally sourced food: {profile.food.localFoodPercent}%</label>
+            <input id="localFood" type="range" min={0} max={100} value={profile.food.localFoodPercent}
+              aria-label="Percentage of locally sourced food"
               onChange={e => updateFood('localFoodPercent', Number(e.target.value))} />
           </div>
         </div>
@@ -108,13 +115,15 @@ export const OnboardingWizard: React.FC<OnboardingProps> = ({ onComplete }) => {
       case 3: return (
         <div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Clothing items per month: {profile.shopping.clothingItemsPerMonth}</label>
-            <input type="range" min={0} max={20} value={profile.shopping.clothingItemsPerMonth}
+            <label htmlFor="clothing" style={labelStyle}>Clothing items per month: {profile.shopping.clothingItemsPerMonth}</label>
+            <input id="clothing" type="range" min={0} max={20} value={profile.shopping.clothingItemsPerMonth}
+              aria-label="Clothing items purchased per month"
               onChange={e => updateShopping('clothingItemsPerMonth', Number(e.target.value))} />
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Electronics purchased per year: {profile.shopping.electronicsPerYear}</label>
-            <input type="range" min={0} max={10} value={profile.shopping.electronicsPerYear}
+            <label htmlFor="electronics" style={labelStyle}>Electronics purchased per year: {profile.shopping.electronicsPerYear}</label>
+            <input id="electronics" type="range" min={0} max={10} value={profile.shopping.electronicsPerYear}
+              aria-label="Electronics purchased per year"
               onChange={e => updateShopping('electronicsPerYear', Number(e.target.value))} />
           </div>
         </div>

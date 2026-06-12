@@ -57,7 +57,9 @@ export const Challenges: React.FC<ChallengesProps> = ({ completedIds, onToggle }
               transition: 'all 0.3s ease',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '1.8rem' }}>{ch.icon}</span>
+                <span style={{ fontSize: '1.8rem' }}>
+                  <span role="img" aria-hidden="true">{ch.icon}</span>
+                </span>
                 <span style={{
                   background: '#e0e5ec',
                   boxShadow: 'inset 2px 2px 4px #b8bec7, inset -2px -2px 4px #ffffff',
@@ -67,17 +69,21 @@ export const Challenges: React.FC<ChallengesProps> = ({ completedIds, onToggle }
               </div>
               <h3 style={{ color: '#2d3748', fontSize: '1rem', fontWeight: 600, margin: '0 0 0.4rem' }}>{ch.title}</h3>
               <p style={{ color: '#718096', fontSize: '0.82rem', lineHeight: 1.5, margin: '0 0 1rem' }}>{ch.description}</p>
-              <button onClick={() => onToggle(ch.id)} style={{
-                width: '100%', padding: '0.6rem',
-                background: done ? 'linear-gradient(135deg, #48bb78, #38a169)' : '#e0e5ec',
-                boxShadow: done
-                  ? 'none'
-                  : '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
-                border: 'none', borderRadius: '14px',
-                color: done ? '#ffffff' : '#718096',
-                cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
-                transition: 'all 0.3s ease',
-              }}>{done ? '✓ Completed' : 'Mark Complete'}</button>
+              <button 
+                onClick={() => onToggle(ch.id)} 
+                aria-pressed={done}
+                aria-label={`Toggle challenge: ${ch.title}`}
+                style={{
+                  width: '100%', padding: '0.6rem',
+                  background: done ? 'linear-gradient(135deg, #48bb78, #38a169)' : '#e0e5ec',
+                  boxShadow: done
+                    ? 'none'
+                    : '5px 5px 10px #b8bec7, -5px -5px 10px #ffffff',
+                  border: 'none', borderRadius: '14px',
+                  color: done ? '#ffffff' : '#718096',
+                  cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
+                  transition: 'all 0.3s ease',
+                }}>{done ? '✓ Completed' : 'Mark Complete'}</button>
             </div>
           );
         })}
